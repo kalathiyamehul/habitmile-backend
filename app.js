@@ -27,7 +27,7 @@ const app = express();
 app.use(express.json());
 
 // MongoDB connection
-mongoose.connect('mongodb+srv://tonylimbani:admin@cluster0.lrxmb3d.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0', {
+mongoose.connect('mongodb+srv://hexablockstech:DkuBaPXYNrJ4Zse2@cluster0.ntmrtcb.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0', {
   useNewUrlParser: true,
   useUnifiedTopology: true,
 });
