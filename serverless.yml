@@ -1,0 +1,25 @@
+service: test-lambda
+configValidationMode: error
+
+provider:
+  name: aws
+  runtime: nodejs20.x
+  memorySize: 512
+  timeout: 30
+  stage: prod
+  region: ap-south-1
+  lambdaHashingVersion: 20201221
+  apiGateway:
+    binaryMediaTypes:
+      - 'multipart/form-data'
+
+
+functions:
+  api:
+    handler: lambda.handler
+    events:
+      - http: ANY /
+      - http: 'ANY /{proxy+}'
+package:
+  patterns:
+    - '!node_modules/**'

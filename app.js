@@ -39,9 +39,14 @@ db.once('open', () => {
 
 // Routes
 app.use('/api/user', userRoutes);
+app.use('/info', (req, res, next) => {
+  res.status(200).json({ status: 'success', data: 'Server is Running' });
+});
 
 // Start server
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
 });
+
+module.exports=app
