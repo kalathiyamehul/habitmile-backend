@@ -1,3 +1,5 @@
+# "org" ensures this Service is used with the correct Serverless Framework Access Key.
+org: hexablocks
 service: test-lambda
 configValidationMode: error
 
@@ -12,7 +14,6 @@ provider:
   apiGateway:
     binaryMediaTypes:
       - 'multipart/form-data'
-
 
 functions:
   api:
