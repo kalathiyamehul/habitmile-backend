@@ -1,7 +1,7 @@
 const express = require('express');
 const router = express.Router();
-const financeController = require('../controllers/financeController');
+const surveyController = require('../controllers/surveyController');
 
-router.post('/calculate', financeController.calculateFinanceScore);
+router.post('/calculate', surveyController.calculateFinanceScore);
 
 module.exports = router;

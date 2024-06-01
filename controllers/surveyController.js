@@ -1,4 +1,4 @@
-const User = require('../models/User');
+const Survey1 = require('../models/Survey1');
 
 // Utility function to convert income allocation ranges to percentages
 function convertIncomeAllocationToPercentage(range) {
@@ -21,7 +21,6 @@ function convertIncomeAllocationToPercentage(range) {
     }
     return percentage;
 }
-
 exports.calculateFinanceScore = async (req, res) => {
     const { age_group, income_range, income_allocation_needs, income_allocation_wants, income_allocation_investments } = req.body;
 
@@ -74,14 +73,14 @@ exports.calculateFinanceScore = async (req, res) => {
             }
         }
 
-         // Calculate scores
-         const needScore = Math.abs(idealPercentages.need - needsPercentage);
-         const wantScore = Math.abs(idealPercentages.want - wantsPercentage);
-         const investmentScore = Math.abs(idealPercentages.investment - investmentsPercentage);
- 
-         // Calculate overall score
-         const Score = 100 - (needScore + wantScore + investmentScore);
-         
+        // Calculate scores
+        const needScore = Math.abs(idealPercentages.need - needsPercentage);
+        const wantScore = Math.abs(idealPercentages.want - wantsPercentage);
+        const investmentScore = Math.abs(idealPercentages.investment - investmentsPercentage);
+
+        // Calculate overall score
+        const Score = 100 - (needScore + wantScore + investmentScore);
+
         // Calculate 70% of finance score
         const FinanceScore = Score * 0.7;
 
@@ -97,6 +96,27 @@ exports.calculateFinanceScore = async (req, res) => {
         await user.save();
 
         res.status(200).json({ Score, FinanceScore });
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ error: "Internal server error" });
+    }
+};
+exports.saveSurvey1 = async (req, res) => {
+    try {
+        const survey = new Survey1({
+            ...req.body
+        });
+        await survey.save();
+        res.status(200).json({ user: survey });
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ error: "Internal server error" });
+    }
+};
+exports.getSurvey1 = async (req, res) => {
+    try {
+        const data = await Survey1.find();
+        res.status(200).json({ data: data });
     } catch (err) {
         console.error(err);
         res.status(500).json({ error: "Internal server error" });

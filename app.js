@@ -1,6 +1,6 @@
 const express = require('express');
 const mongoose = require('mongoose');
-const userRoutes = require('./routes/userRoutes');
+const surveyRoutes = require('./routes/survey.route');
 const cors = require('cors');
 const app = express();
 app.use(express.json());
@@ -19,13 +19,13 @@ db.once('open', () => {
 });
 
 // Routes
-app.use('/api/user', userRoutes);
-app.use('/info', (req, res, next) => {
+app.use('/api/survey', surveyRoutes);
+app.use('/api/info', (req, res, next) => {
   res.status(200).json({ status: 'success', data: 'Server is Running' });
 });
 
 // Start server
-const PORT = process.env.PORT || 5000;
+const PORT = process.env.PORT || 9000;
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
 });
