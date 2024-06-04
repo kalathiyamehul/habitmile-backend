@@ -64,6 +64,10 @@ const questionSchema = new mongoose.Schema({
   virtualHangout: {
     type: String,
     required: false
+  },
+  score: {
+    type: String,
+    required: false
   }
 });
 

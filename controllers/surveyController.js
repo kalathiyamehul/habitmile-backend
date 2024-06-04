@@ -101,15 +101,162 @@ exports.calculateFinanceScore = async (req, res) => {
         res.status(500).json({ error: "Internal server error" });
     }
 };
+
+// Define the scoring system based on the provided scoring logic
+const scoringSystem = {
+    age: {
+      "Below 18 years": 0,
+      "18-24 years old": 0,
+      "25-34 years old": 0,
+      "35-44 years old": 0,
+      "45-54 years old": 0,
+      "55-64 years old": 0,
+      "65 years old and above": 0
+    },
+    gender: {
+      "Male": 0,
+      "Female": 0,
+      "Other": 0
+    },
+    occupation: {
+      // Define points for each occupation status
+    },
+    habitTracking: {
+      "Yup!": 10,
+      "Hmm, Mostly not": 0
+    },
+    habitTrackingMethods: {
+        "Pen and paper" :5,
+        "Mobile apps" :10,
+        "Spreadsheets" : 7,
+        "Wearable devices (e.g., fitness trackers)":10,
+        "Other" : 5
+    },
+    habitTrackingFrequency: {
+        "Nope, never" : 0,
+        "Daily" : 10,
+        "Weekly" : 7,
+        "Monthly" : 5,  
+        "Occasionally" : 3 
+    },
+    disciplineLevel: {
+        "Not disciplined" : 0,  
+        "Somewhat disciplined":3,
+        "Moderately disciplined" :5,
+        "Very disciplined" : 7,  
+        "Extremely disciplined":10 
+    },
+    goalSettingMethods: {
+        "Writing them down": 10,
+        "Discussing with a friend/family member": 5,
+        "Using a goal-setting app/tool": 10,
+        "Other": 5
+    },
+    progressTrackingMethods: {
+        "Regularly reviewing my goals" :10,
+        "Using a progress tracker (e.g. checklists, journal)" :10 , 
+        "Seeking feedback from others" :7  ,
+        "Other" :5
+    },
+    disciplineStrategies: {
+        "Creating routines/schedules" :10,  
+        "Setting reminders" :7  ,
+        "Rewarding myself for accomplishments" :7 ,
+        "Seeking support from friends/family" :5  ,
+        "Other" :5
+    },
+    challenges: {
+        "Lack of motivation" :0,
+        "Procrastination" :0,
+        "Time management":3,
+        "Distractions" :3,
+        "Overcommitting" :3,
+        "Other" :3
+    },
+    personalGrowthImportance: {
+        "Not important" :0,
+        "Slightly important" :3  ,
+        "Moderately important" :5,
+        "Very important" :7  ,
+        "Extremely important" :10
+    },
+    personalGrowthSatisfaction: {
+        "1" :0  ,
+        "2" :3  ,
+        "3" :5  ,
+        "4" :7  ,
+        "5" :10
+    },
+    personalGrowthHabits: {
+        "Regular exercise/Fitness" :10  ,
+        "Meditation/mindfulness" :10  ,
+        "Reading/self-education" :10 ,
+        "Spending time with loved ones" :5  ,
+        "Finance" :5  ,
+        "Work related" :5  ,
+        "Hobbies" :5  ,
+        "Other" :5
+    },
+    virtualHangout: {
+      "Yes": 10,
+      "No": 0
+    }
+  };
+  
+  // Function to calculate total score and percentage
+  const calculateScoreAndPercentage = (surveyData) => {
+    let totalScore = 0;
+  
+    // Calculate total score based on the selected choices for multi-select questions
+    const selectedHabitTrackingMethods = surveyData.habitTrackingMethods; // Assuming habitTrackingMethods is an array of selected options
+    selectedHabitTrackingMethods.forEach((option) => {
+        totalScore += scoringSystem.habitTrackingMethods[option];
+    });
+    const selectedgoalSettingMethods = surveyData.goalSettingMethods; 
+    selectedgoalSettingMethods.forEach((option) => {
+        totalScore += scoringSystem.goalSettingMethods[option];
+    });
+    const selectedprogressTrackingMethods = surveyData.progressTrackingMethods; 
+    selectedprogressTrackingMethods.forEach((option) => {
+        totalScore += scoringSystem.progressTrackingMethods[option];
+    });
+    const selectedDisciplineStrategies = surveyData.disciplineStrategies; 
+    selectedDisciplineStrategies.forEach((option) => {
+        totalScore += scoringSystem.disciplineStrategies[option];
+    });
+    const selectedChallenges = surveyData.challenges; 
+    selectedChallenges.forEach((option) => {
+        totalScore += scoringSystem.challenges[option];
+    });
+    const selectedPersonalGrowthHabits = surveyData.personalGrowthHabits; 
+    selectedPersonalGrowthHabits.forEach((option) => {
+        totalScore += scoringSystem.personalGrowthHabits[option];
+    });
+    // Calculate total score based on the selected choices
+    totalScore += scoringSystem.habitTracking[surveyData.habitTracking];
+    totalScore += scoringSystem.habitTrackingFrequency[surveyData.habitTrackingFrequency];
+    totalScore += scoringSystem.disciplineLevel[surveyData.disciplineLevel];
+    totalScore += scoringSystem.personalGrowthImportance[surveyData.personalGrowthImportance];
+    totalScore += scoringSystem.personalGrowthSatisfaction[surveyData.personalGrowthSatisfaction];
+ 
+    // Calculate percentage from the total score
+    const maximumPossibleScore = 200; // Define the maximum possible score
+    let percentage = ((totalScore / maximumPossibleScore) * 100).toFixed(2); // Calculate percentage based on the maximum possible score
+    percentage = Math.min(Math.max(percentage, 0), 100);
+    return percentage;
+  };
+  
 exports.saveSurvey1 = async (req, res) => {
     try {
+        const percentageScore = calculateScoreAndPercentage(req.body);
         const survey = new Survey1({
-            ...req.body
+            ...req.body,
+            score: percentageScore
         });
         await survey.save();
-        res.status(200).json({
+        res.status(200).json({  
             user: survey,
-            score: 10
+            score: percentageScore
         });
     } catch (err) {
         console.error(err);
