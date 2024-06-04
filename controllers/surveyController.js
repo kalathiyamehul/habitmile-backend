@@ -107,7 +107,10 @@ exports.saveSurvey1 = async (req, res) => {
             ...req.body
         });
         await survey.save();
-        res.status(200).json({ user: survey });
+        res.status(200).json({
+            user: survey,
+            score: 10
+        });
     } catch (err) {
         console.error(err);
         res.status(500).json({ error: "Internal server error" });
