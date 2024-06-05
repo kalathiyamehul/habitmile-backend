@@ -119,7 +119,15 @@ const scoringSystem = {
       "Other": 0
     },
     occupation: {
-      // Define points for each occupation status
+        "Student": 0,
+        "Employed - Full-time": 0,
+        "Employed - Part-time": 0,
+        "Self-employed / Entrepreneur": 0,
+        "Office worker (e.g., administrative assistant, clerk)": 0,
+        "Professional (e.g., Doctor, Lawyer, Engineer)": 0,
+        "Homemaker": 0,
+        "Retired": 0,
+        "Other": 0
     },
     habitTracking: {
       "Yup!": 10,
@@ -181,25 +189,25 @@ const scoringSystem = {
         "Extremely important" :10
     },
     personalGrowthSatisfaction: {
-        "1" :0  ,
-        "2" :3  ,
-        "3" :5  ,
-        "4" :7  ,
-        "5" :10
+        "1": 0,
+        "2": 3,
+        "3": 5,
+        "4": 7,
+        "5": 10
     },
     personalGrowthHabits: {
-        "Regular exercise/Fitness" :10  ,
-        "Meditation/mindfulness" :10  ,
-        "Reading/self-education" :10 ,
-        "Spending time with loved ones" :5  ,
-        "Finance" :5  ,
-        "Work related" :5  ,
-        "Hobbies" :5  ,
-        "Other" :5
+        "Regular exercise/Fitness": 10,
+        "Meditation/mindfulness": 10,
+        "Reading/self-education": 10,
+        "Spending time with loved ones": 5,
+        "Finance": 5,
+        "Work related": 5,
+        "Hobbies": 5,
+        "Other": 5
     },
     virtualHangout: {
-      "Yes": 10,
-      "No": 0
+        "Yes": 0,
+        "No": 0
     }
   };
   
@@ -210,37 +218,36 @@ const scoringSystem = {
     // Calculate total score based on the selected choices for multi-select questions
     const selectedHabitTrackingMethods = surveyData.habitTrackingMethods; // Assuming habitTrackingMethods is an array of selected options
     selectedHabitTrackingMethods.forEach((option) => {
-        totalScore += scoringSystem.habitTrackingMethods[option];
+        totalScore += (scoringSystem.habitTrackingMethods[option] || 0);
     });
     const selectedgoalSettingMethods = surveyData.goalSettingMethods; 
     selectedgoalSettingMethods.forEach((option) => {
-        totalScore += scoringSystem.goalSettingMethods[option];
+        totalScore += (scoringSystem.goalSettingMethods[option] || 0);
     });
     const selectedprogressTrackingMethods = surveyData.progressTrackingMethods; 
     selectedprogressTrackingMethods.forEach((option) => {
-        totalScore += scoringSystem.progressTrackingMethods[option];
+        totalScore += (scoringSystem.progressTrackingMethods[option] || 0);
     });
     const selectedDisciplineStrategies = surveyData.disciplineStrategies; 
     selectedDisciplineStrategies.forEach((option) => {
-        totalScore += scoringSystem.disciplineStrategies[option];
+        totalScore += (scoringSystem.disciplineStrategies[option] || 0);
     });
     const selectedChallenges = surveyData.challenges; 
     selectedChallenges.forEach((option) => {
-        totalScore += scoringSystem.challenges[option];
+        totalScore += (scoringSystem.challenges[option] || 0);
     });
     const selectedPersonalGrowthHabits = surveyData.personalGrowthHabits; 
     selectedPersonalGrowthHabits.forEach((option) => {
-        totalScore += scoringSystem.personalGrowthHabits[option];
+        totalScore += (scoringSystem.personalGrowthHabits[option] || 0);
     });
     // Calculate total score based on the selected choices
-    totalScore += scoringSystem.habitTracking[surveyData.habitTracking];
-    totalScore += scoringSystem.habitTrackingFrequency[surveyData.habitTrackingFrequency];
-    totalScore += scoringSystem.disciplineLevel[surveyData.disciplineLevel];
-    totalScore += scoringSystem.personalGrowthImportance[surveyData.personalGrowthImportance];
-    totalScore += scoringSystem.personalGrowthSatisfaction[surveyData.personalGrowthSatisfaction];
- 
+      totalScore += (scoringSystem.habitTracking[surveyData.habitTracking] || 0);
+      totalScore += (scoringSystem.habitTrackingFrequency[surveyData.habitTrackingFrequency] || 0);
+      totalScore += (scoringSystem.disciplineLevel[surveyData.disciplineLevel] || 0);
+      totalScore += (scoringSystem.personalGrowthImportance[surveyData.personalGrowthImportance] || 0);
+      totalScore += (scoringSystem.personalGrowthSatisfaction[surveyData.personalGrowthSatisfaction] || 0);
     // Calculate percentage from the total score
-    const maximumPossibleScore = 200; // Define the maximum possible score
+      const maximumPossibleScore = 200;
     let percentage = ((totalScore / maximumPossibleScore) * 100).toFixed(2); // Calculate percentage based on the maximum possible score
     percentage = Math.min(Math.max(percentage, 0), 100);
     return percentage;
