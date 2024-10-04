@@ -1,4 +1,5 @@
 const Survey1 = require('../models/Survey1');
+const Download = require('../models/Download');
 
 // Utility function to convert income allocation ranges to percentages
 function convertIncomeAllocationToPercentage(range) {
@@ -102,7 +103,6 @@ exports.calculateFinanceScore = async (req, res) => {
     }
 };
 
-// Define the scoring system based on the provided scoring logic
 const scoringSystem = {
     age: {
       "Below 18 years": 0,
@@ -209,49 +209,47 @@ const scoringSystem = {
         "Yes": 0,
         "No": 0
     }
-  };
-  
-  // Function to calculate total score and percentage
-  const calculateScoreAndPercentage = (surveyData) => {
+};
+const calculateScoreAndPercentage = (surveyData) => {
     let totalScore = 0;
-  
+
     // Calculate total score based on the selected choices for multi-select questions
     const selectedHabitTrackingMethods = surveyData.habitTrackingMethods; // Assuming habitTrackingMethods is an array of selected options
     selectedHabitTrackingMethods.forEach((option) => {
         totalScore += (scoringSystem.habitTrackingMethods[option] || 0);
     });
-    const selectedgoalSettingMethods = surveyData.goalSettingMethods; 
+    const selectedgoalSettingMethods = surveyData.goalSettingMethods;
     selectedgoalSettingMethods.forEach((option) => {
         totalScore += (scoringSystem.goalSettingMethods[option] || 0);
     });
-    const selectedprogressTrackingMethods = surveyData.progressTrackingMethods; 
+    const selectedprogressTrackingMethods = surveyData.progressTrackingMethods;
     selectedprogressTrackingMethods.forEach((option) => {
         totalScore += (scoringSystem.progressTrackingMethods[option] || 0);
     });
-    const selectedDisciplineStrategies = surveyData.disciplineStrategies; 
+    const selectedDisciplineStrategies = surveyData.disciplineStrategies;
     selectedDisciplineStrategies.forEach((option) => {
         totalScore += (scoringSystem.disciplineStrategies[option] || 0);
     });
-    const selectedChallenges = surveyData.challenges; 
+    const selectedChallenges = surveyData.challenges;
     selectedChallenges.forEach((option) => {
         totalScore += (scoringSystem.challenges[option] || 0);
     });
-    const selectedPersonalGrowthHabits = surveyData.personalGrowthHabits; 
+    const selectedPersonalGrowthHabits = surveyData.personalGrowthHabits;
     selectedPersonalGrowthHabits.forEach((option) => {
         totalScore += (scoringSystem.personalGrowthHabits[option] || 0);
     });
     // Calculate total score based on the selected choices
-      totalScore += (scoringSystem.habitTracking[surveyData.habitTracking] || 0);
-      totalScore += (scoringSystem.habitTrackingFrequency[surveyData.habitTrackingFrequency] || 0);
-      totalScore += (scoringSystem.disciplineLevel[surveyData.disciplineLevel] || 0);
-      totalScore += (scoringSystem.personalGrowthImportance[surveyData.personalGrowthImportance] || 0);
-      totalScore += (scoringSystem.personalGrowthSatisfaction[surveyData.personalGrowthSatisfaction] || 0);
+    totalScore += (scoringSystem.habitTracking[surveyData.habitTracking] || 0);
+    totalScore += (scoringSystem.habitTrackingFrequency[surveyData.habitTrackingFrequency] || 0);
+    totalScore += (scoringSystem.disciplineLevel[surveyData.disciplineLevel] || 0);
+    totalScore += (scoringSystem.personalGrowthImportance[surveyData.personalGrowthImportance] || 0);
+    totalScore += (scoringSystem.personalGrowthSatisfaction[surveyData.personalGrowthSatisfaction] || 0);
     // Calculate percentage from the total score
-      const maximumPossibleScore = 200;
+    const maximumPossibleScore = 200;
     let percentage = ((totalScore / maximumPossibleScore) * 100).toFixed(2); // Calculate percentage based on the maximum possible score
     percentage = Math.min(Math.max(percentage, 0), 100);
     return percentage;
-  };
+};
   
 exports.saveSurvey1 = async (req, res) => {
     try {
@@ -261,9 +259,23 @@ exports.saveSurvey1 = async (req, res) => {
             score: percentageScore
         });
         await survey.save();
-        res.status(200).json({  
+        res.status(200).json({
             user: survey,
             score: percentageScore
+        });
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ error: "Internal server error" });
+    }
+};
+exports.saveDownload = async (req, res) => {
+    try {
+        const download = new Download({
+            downloadTime: new Date()
+        });
+        await download.save();
+        res.status(200).json({
+            user: download
         });
     } catch (err) {
         console.error(err);
